@@ -17,14 +17,13 @@ import (
 )
 
 const (
-	//workDir = `/home/jacob/Documents/WGU/capstone/`
-	workDir = `C:\Users\jacob.bohanon\Documents\Code\capstone\`
+	workDir = `.` + string(os.PathSeparator)
 	dSrcName = "file:" + workDir + "en_wikibooks.sqlite"
 	dbDriver = "sqlite3"
-	mongoDbName = "wikibooks2"
 )
 
 var (
+	mongoDbName = os.Getenv("MONGODB_NAME")
 	db                 *sql.DB
 	allWikibooksByPath = make(map[string]*wikibook)
 	allWikibooksById = make(map[int]*wikibook)
