@@ -1,15 +1,13 @@
-FROM golang:1.17-alpine AS builder
+FROM golang:1.17 AS builder
 LABEL maintainer="Jacob Bohanon <jacobbohanon@gmail.com>"
 WORKDIR /build
 COPY go.mod .
 COPY go.sum .
+COPY *.go .
+RUN go mod tidy
 RUN go mod download
-COPY . .
-WORKDIR /build/copy
-COPY en .
-COPY en_wikibooks.sqlite .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /build/copy/capstone-etl
-FROM scratch
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o /app/capstone-etl
+COPY en /app/
+COPY en_wikibooks.sqlite /app/
 WORKDIR /app
-COPY --from=builder /build/copy/ /app/
 ENTRYPOINT ["/app/capstone-etl"]

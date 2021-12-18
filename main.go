@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"math"
 	"os"
@@ -78,7 +79,8 @@ type (
 
 func connMongo(ctx context.Context) {
 	var err error
-	mongodb, err = mongo.Connect(ctx, nil)
+	clientOpts := options.Client().ApplyURI(os.Getenv("MONGODB_CONN_STR"))
+	mongodb, err = mongo.Connect(ctx, clientOpts)
 	if err != nil {
 		err = errors.Wrap(err, "connecting to mongodb")
 		panic(err)
